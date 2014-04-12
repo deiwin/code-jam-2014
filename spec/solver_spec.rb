@@ -1,7 +1,7 @@
 require './solver'
 
 describe Solver do
-  let(:solver) { Class.new { extend Solver } }
+  let(:solver) { Class.new{ include Solver }.new }
 
   describe '#solve_with_file' do
     let(:filename) { 'filename.in' }
