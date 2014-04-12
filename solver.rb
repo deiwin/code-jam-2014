@@ -8,7 +8,7 @@ module Solver
           test_data = parse(input)
           solution = solve(test_data)
           dump(output, solution)
-          output.write("\n") if case_nr != cases
+          output.write("\n")
         end
       end
     end

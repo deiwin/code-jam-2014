@@ -83,7 +83,7 @@ describe Solver do
 
         it 'write results to output file' do
           solver.solve_with_file(filename)
-          expect(@ouput.string).to eq("Case #1: solution1\nCase #2: solution2")
+          expect(@ouput.string).to eq("Case #1: solution1\nCase #2: solution2\n")
         end
       end
     end
