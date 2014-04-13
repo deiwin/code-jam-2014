@@ -6,7 +6,7 @@ class Minesweeper
   def solve(input)
     for row in 0..(input[:rows] - 1)
       for column in 0..(input[:columns] - 1)
-        solution = breadth_first_traverse(input.merge({
+        solution = depth_first_traverse(input.merge({
           :row => row,
           :column => column
           }))
@@ -16,26 +16,25 @@ class Minesweeper
     return false
   end
 
-  def breadth_first_traverse(input)
-    queue = Queue.new
-    queue << [input[:row], input[:column]]
+  def depth_first_traverse(input)
     matrix = init_matrix_with_starting_loc(input)
-
     goal = input[:rows] * input[:columns] - input[:mines]
     marked = 1
-    until queue.empty? || marked == goal do
-      loc = queue.pop
-      new_touching_locs = get_new_touching_locs(matrix, loc, input)
-      p new_touching_locs
-      next if marked + new_touching_locs.size > goal
-      marked += new_touching_locs.size
-      mark_locations(matrix, new_touching_locs, '.')
-      new_touching_locs.each do |loc|
-        queue << loc
-      end
-    end
+    loc = [input[:row], input[:column]]
+    return traverse(loc, matrix, marked, goal, input)
+  end
 
-    marked == goal ? matrix : false
+  def traverse(loc, matrix, marked, goal, input)
+    new_touching_locs = get_new_touching_locs(matrix, loc, input)
+    new_marked = marked + new_touching_locs.size
+    return false if new_marked > goal
+    new_matrix = mark_locations(matrix, new_touching_locs, '.')
+    return new_matrix if new_marked == goal
+    new_touching_locs.each do |loc|
+      result = traverse(loc, new_matrix, new_marked, goal, input)
+      return result if result
+    end
+    return false
   end
 
   def init_matrix_with_starting_loc(input)
@@ -52,9 +51,11 @@ class Minesweeper
   end
 
   def mark_locations(matrix, locations, mark)
+    result = Marshal.load( Marshal.dump( matrix ) )
     locations.each do |loc|
-      matrix[loc[0]][loc[1]] = mark
+      result[loc[0]][loc[1]] = mark
     end
+    return result
   end
 
   def get_new_touching_locs(matrix, loc, input)
@@ -67,14 +68,14 @@ class Minesweeper
     result = []
     max_row = input[:rows] - 1
     max_col = input[:columns] - 1
-    result << [loc[0] + 1, loc[1] + 1] if loc[0] < max_row && loc[1] < max_col
-    result << [loc[0],     loc[1] + 1] if                     loc[1] < max_col
-    result << [loc[0] - 1, loc[1] + 1] if loc[0] > 0       && loc[1] < max_col
-    result << [loc[0] + 1, loc[1]]     if loc[0] < max_row
-    result << [loc[0] - 1, loc[1]]     if loc[0] > 0
-    result << [loc[0] + 1, loc[1] - 1] if loc[0] < max_row && loc[1] > 0
-    result << [loc[0],     loc[1] - 1] if                     loc[1] > 0
     result << [loc[0] - 1, loc[1] - 1] if loc[0] > 0       && loc[1] > 0
+    result << [loc[0],     loc[1] - 1] if                     loc[1] > 0
+    result << [loc[0] + 1, loc[1] - 1] if loc[0] < max_row && loc[1] > 0
+    result << [loc[0] - 1, loc[1]]     if loc[0] > 0
+    result << [loc[0] + 1, loc[1]]     if loc[0] < max_row
+    result << [loc[0] - 1, loc[1] + 1] if loc[0] > 0       && loc[1] < max_col
+    result << [loc[0],     loc[1] + 1] if                     loc[1] < max_col
+    result << [loc[0] + 1, loc[1] + 1] if loc[0] < max_row && loc[1] < max_col
     return result
   end
 
