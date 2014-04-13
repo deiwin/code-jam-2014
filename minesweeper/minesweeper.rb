@@ -13,36 +13,68 @@ class Minesweeper
         return solution if solution
       end
     end
+    return false
   end
 
   def breadth_first_traverse(input)
     queue = Queue.new
     queue << [input[:row], input[:column]]
-    matrix = Array.new(input[:rows], Array.new(input[:columns], '*'))
-    matrix[input[:row], input[:column]] = 'c'
+    matrix = init_matrix_with_starting_loc(input)
 
-    goal = input[:row] * input[:column] - input[:mines]
-
-    until queue.empty? do
+    goal = input[:rows] * input[:columns] - input[:mines]
+    marked = 1
+    until queue.empty? || marked == goal do
       loc = queue.pop
-      touching_locs = get_touching_locs(loc, input)
+      new_touching_locs = get_new_touching_locs(matrix, loc, input)
+      p new_touching_locs
+      next if marked + new_touching_locs.size > goal
+      marked += new_touching_locs.size
+      mark_locations(matrix, new_touching_locs, '.')
+      new_touching_locs.each do |loc|
+        queue << loc
+      end
     end
 
-    matrix
+    marked == goal ? matrix : false
+  end
+
+  def init_matrix_with_starting_loc(input)
+    matrix = []
+    input[:rows].times do
+      row = []
+      input[:columns].times do
+        row << '*'
+      end
+      matrix << row
+    end
+    matrix[input[:row]][input[:column]] = 'c'
+    return matrix
+  end
+
+  def mark_locations(matrix, locations, mark)
+    locations.each do |loc|
+      matrix[loc[0]][loc[1]] = mark
+    end
+  end
+
+  def get_new_touching_locs(matrix, loc, input)
+    get_touching_locs(loc, input).select do |loc|
+      matrix[loc[0]][loc[1]] == '*'
+    end
   end
 
   def get_touching_locs(loc, input)
     result = []
     max_row = input[:rows] - 1
     max_col = input[:columns] - 1
-    result << [loc[0] - 1, loc[1] - 1] if loc[0] > 0       && loc[1] > 0
-    result << [loc[0],     loc[1] - 1] if                     loc[1] > 0
-    result << [loc[0] + 1, loc[1] - 1] if loc[0] < max_row && loc[1] > 0
-    result << [loc[0] - 1, loc[1]]     if loc[0] > 0       && loc[1] > 0
-    result << [loc[0] + 1, loc[1]]     if loc[0] < max_row && loc[1] > 0
-    result << [loc[0] - 1, loc[1] + 1] if loc[0] > 0       && loc[1] < max_col
-    result << [loc[0],     loc[1] + 1] if                     loc[1] < max_col
     result << [loc[0] + 1, loc[1] + 1] if loc[0] < max_row && loc[1] < max_col
+    result << [loc[0],     loc[1] + 1] if                     loc[1] < max_col
+    result << [loc[0] - 1, loc[1] + 1] if loc[0] > 0       && loc[1] < max_col
+    result << [loc[0] + 1, loc[1]]     if loc[0] < max_row
+    result << [loc[0] - 1, loc[1]]     if loc[0] > 0
+    result << [loc[0] + 1, loc[1] - 1] if loc[0] < max_row && loc[1] > 0
+    result << [loc[0],     loc[1] - 1] if                     loc[1] > 0
+    result << [loc[0] - 1, loc[1] - 1] if loc[0] > 0       && loc[1] > 0
     return result
   end
 

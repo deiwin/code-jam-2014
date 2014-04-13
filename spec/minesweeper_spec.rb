@@ -23,6 +23,90 @@ describe Minesweeper do
       solution = solver.solve(input)
       expect(solution).to eq([['c'], ['.'], ['*']])
     end
+
+    it 'should solve example 3' do
+      input = {
+        :rows => 2,
+        :columns => 2,
+        :mines => 1
+      }
+      solution = solver.solve(input)
+      expect(solution).to eq(false)
+    end
+
+    it 'should solve example 4' do
+      input = {
+        :rows => 4,
+        :columns => 7,
+        :mines => 3
+      }
+      solution = solver.solve(input)
+      expect(solution).to eq([
+        ['.', '.', '.', '.', '.', '.', '*' ],
+        ['.', 'c', '.', '.', '.', '.', '*' ],
+        ['.', '.', '.', '.', '.', '.', '.' ],
+        ['.', '.', '*', '.', '.', '.', '.' ],
+        ])
+    end
+
+    it 'should solve example 5' do
+      input = {
+        :rows => 10,
+        :columns => 10,
+        :mines => 82
+      }
+      solution = solver.solve(input)
+      p solution.inspect
+      expect(solution).to eq([
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ['*', '*', '*', '*', '*', '*', '*', '*', '*' ],
+        ])
+    end
+  end
+
+  describe '#mark_locations' do
+    it 'should change the matrix' do
+      matrix = [
+        ['1', '2', '3'],
+        ['6', '5', '4'],
+        ['7', '8', '9']
+      ]
+
+      solver.mark_locations(matrix, [[1,2], [2,2]], '.')
+      expect(matrix).to eq([
+        ['1', '2', '3'],
+        ['6', '5', '.'],
+        ['7', '8', '.']
+        ])
+    end
+  end
+
+  describe '#get_new_touching_locs' do
+    it 'should return 8 nodes for a middle square' do
+      input = {
+        :rows => 3,
+        :columns => 3
+      }
+
+      matrix = [
+        ['*', '*', '*'],
+        ['*', '.', '*'],
+        ['*', '*', '*']
+      ]
+      touching_locs = solver.get_new_touching_locs(matrix, [2, 2], input)
+      expect(touching_locs.size).to eq(2)
+      expect(touching_locs).to include([1, 2])
+      expect(touching_locs).to include([2, 1])
+    end
   end
 
   describe '#get_touching_locs' do
@@ -69,8 +153,6 @@ describe Minesweeper do
       expect(touching_locs).to include([1, 2])
       expect(touching_locs).to include([2, 1])
     end
-
-
   end
 
   describe '#parse' do
