@@ -25,11 +25,11 @@ class Minesweeper
   end
 
   def traverse(loc, matrix, marked, goal, input)
+    return matrix if marked == goal
     new_touching_locs = get_new_touching_locs(matrix, loc, input)
     new_marked = marked + new_touching_locs.size
     return false if new_marked > goal
     new_matrix = mark_locations(matrix, new_touching_locs, '.')
-    return new_matrix if new_marked == goal
     new_touching_locs.each do |loc|
       result = traverse(loc, new_matrix, new_marked, goal, input)
       return result if result

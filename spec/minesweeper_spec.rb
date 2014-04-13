@@ -69,6 +69,16 @@ describe Minesweeper do
         ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*' ]
         ])
     end
+
+    it 'should solve example 1 3 2' do
+      input = {
+        :rows => 1,
+        :columns => 3,
+        :mines => 2
+      }
+      solution = solver.solve(input)
+      expect(solution).to eq([['c', '*', '*']])
+    end
   end
 
   describe '#mark_locations' do
