@@ -14,7 +14,7 @@ class CookieClicker
       time_to_farm = last_time_to_farm + input[:farm_price] / rate
       rate += input[:farm_rate]
       time_to_goal = time_to_farm + input[:goal] / rate
-      break if time_to_goal > last_time_to_goal || last_time_to_goal -time_to_goal < 10**-7
+      break if time_to_goal > last_time_to_goal
       last_time_to_farm = time_to_farm
       last_time_to_goal = time_to_goal
     end
