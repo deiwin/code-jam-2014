@@ -59,6 +59,13 @@ describe Repeater do
       solution = solver.solve(input)
       expect(solution).to eq(2)
     end
+
+    it 'should work for 3 1 1 ' do
+      input = ['aaa', 'a', 'a']
+
+      solution = solver.solve(input)
+      expect(solution).to eq(2)
+    end
   end
 
   describe '#parse' do
