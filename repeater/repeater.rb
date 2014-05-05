@@ -12,7 +12,7 @@ class Repeater
     for letter_i in 0..(nr_letters -1)
       letter_sum = 0
       heat_maps.each { |heat_map| letter_sum += heat_map[letter_i][1] }
-      letter_average = letter_sum / nr_strings
+      letter_average = (letter_sum / nr_strings.to_f).round
       heat_maps.each { |heat_map| sum += (letter_average - heat_map[letter_i][1]).abs }
     end
     sum

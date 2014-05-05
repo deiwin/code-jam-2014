@@ -38,6 +38,27 @@ describe Repeater do
       solution = solver.solve(input)
       expect(solution).to eq(3)
     end
+
+    it 'should round to closest integer' do
+      input = ['aa', 'aa', 'a']
+
+      solution = solver.solve(input)
+      expect(solution).to eq(1)
+    end
+
+    it 'should round to closest integer' do
+      input = ['aab', 'aabb', 'abb']
+
+      solution = solver.solve(input)
+      expect(solution).to eq(2)
+    end
+
+    it 'should be able to remove letters' do
+      input = ['aaa', 'aa', 'a']
+
+      solution = solver.solve(input)
+      expect(solution).to eq(2)
+    end
   end
 
   describe '#parse' do
